@@ -120,7 +120,11 @@ document
       region: "eastus",
     };
     console.log(
-      transcription.transcribeFromMicrophone(creds.authToken, creds.region)
+      transcription.transcribeFromMicrophone(
+        creds.authToken,
+        creds.region,
+        "spanish"
+      )
     );
   });
 
