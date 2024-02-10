@@ -1,21 +1,31 @@
 var currentChatId = null;
+var languageHeroId = null;
 
-async function queryGpt(userQuery) {
+async function queryGpt(userQuery, level, language) {
     if (currentChatId == null) {
 	console.log("mugsy");
-	currentChatId = await fetch('/new-chat', {
+	const data = await fetch('/chat/new-chat', {
             method: 'POST',
+	    headers: {
+		'Content-Type': 'application/json',
+	    },
+	    body: JSON.stringify({level: level, language: language})
 	})
 	    .then(async response => {
 		const data = await response.json()
-		return data.chatId
+		console.log(data);
+		return data;
 	    });
+	currentChatId = data.chatId;
+	languageHeroId = data.languageHeroId;
     }
     console.log(currentChatId);
-    const body = JSON.stringify({query: query, chatId: currentChatId});
+    console.log(languageHeroId);
+    console.log(currentChatId);
+    const body = JSON.stringify({message: userQuery, chatId: currentChatId, languageHeroId: languageHeroId});
     console.log("AAAA");
     console.log(body);
-    const runId = await fetch('/gpt-query', {
+    var run = await fetch('/chat/send-gpt-message', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,13 +35,13 @@ async function queryGpt(userQuery) {
 	.then(async response => {
 	    response = await response.json();
 	    console.log(response);
-	    return response.newRunId;	    
+	    return response.run;	    
 	})
-    console.log(currentChatId);
+
     var res = null;
-    const pollBody = JSON.stringify({chatId: currentChatId});
+    var pollBody = JSON.stringify({chatId: currentChatId, run: run});
     async function poll() {
-	return  await fetch('/poll-gpt-response', {
+	return  await fetch('/chat/poll-gpt-response', {
 	    method: 'POST',
 	    headers: {
 		'Content-Type': 'application/json',
@@ -43,9 +53,10 @@ async function queryGpt(userQuery) {
     function pollUntilComplete() {
 	return new Promise(async (resolve, reject) => {
 	    async function pollAndUpdate() {
+		
 		console.log("polleon");
 		try {
-		    const response = await fetch('/poll-gpt-response', {
+		    const response = await fetch('/chat/poll-gpt-response', {
 			method: 'POST',
 			headers: {
 			    'Content-Type': 'application/json',
@@ -58,9 +69,9 @@ async function queryGpt(userQuery) {
 			console.log(res); // Process or log the result as needed
 			console.log("=====");
 			console.log(res.status);
-			
+			pollBody.run = res.run;
 			// Check if the condition to stop polling is met, for example:
-			if (res.status == "done") {
+			if (res.status == "completed") {
 			   resolve(res);
 			   clearInterval(pollInterval);
 			   console.log("Polling stopped:", res);
@@ -92,10 +103,7 @@ async function queryGpt(userQuery) {
     console.log('Polling complete.');
     console.log(res);
     const messages = res.newMessages;
-    for (m in messages) {                                                                                                                                                                                         
-        //document.getElementById('gpt-response').innerText = data.response;
-	appendMessage(messages[m].content[0].text.value,false);
-    };
+    return messages;
 
 	/*
 		console.log(response);
@@ -112,4 +120,5 @@ async function queryGpt(userQuery) {
     .catch(error => console.error('Error:', error));*/
     
 
-});
+}
+

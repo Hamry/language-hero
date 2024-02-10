@@ -1,6 +1,7 @@
 require('dotenv').config(); // Load environment variables from .env file
 const sdk = require('microsoft-cognitiveservices-speech-sdk');
 const tts = require('./tts.js');
+const gpt = require('./openai.js');
 
 const express = require('express');
 const app = express();
@@ -36,27 +37,38 @@ app.post('/transcribe', (req, res) => {
 
 app.post('/chat/new-chat', async (req, res) => {
     console.log(req.body);
-    const chat = await gpt.initializeChat();
-    res.status(200).json(chat);
+    const chat = await gpt.initializeChat(req.body.level, req.body.language);
+    const chatId = chat.thread.id;
+    const languageHeroId = chat.assistant.id;
+    res.status(200).json({chatId: chatId, languageHeroId: languageHeroId});
 });
 /**
  * Use the openai assistants API to generate a text response to the synthesized
  * user audio by calling functions from openai.js.
  */
-app.post('/chat/send-gpt-message', async (req, res) => {});
+app.post('/chat/send-gpt-message', async (req, res) => {
+    console.log(req.body);
+    const chat = await gpt.retrieveChat(req.body.chatId, req.body.languageHeroId);
+    const response = await chat.sendMessage(req.body.message);
+    const run = await chat.createGptRun();
+    res.status(200).json({run: run});
+});
 
 app.post('/chat/poll-gpt-response', async (req, res) => {
     const chat = await gpt.retrieveChat(req.body.chatId);
-    const status = chat.run.status;
-    if (status === 'completed') {
-	const response = await chat.getNewMessages();
-	res.status(200).json(response);
+    const run = await chat.pollRun(req.body.run);
+    console.log("pgr");
+    console.log(run);
+    const status = run.status;
+    if (status == 'completed') {
+	const messages = await chat.getNewMessages();
+	res.status(200).json({status: 'completed', messages: messages});
     } else if (status === 'failed') {
 	console.log(status);
 	console.log(chat.run);
-	res.status(500);
+	res.status(500).json({status: 'failed', error: chat.run.error});
     } else {
-	res.status(201);
+	res.status(201).json({status: 'running'});
     }
     
 });
