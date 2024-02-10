@@ -1,4 +1,4 @@
-async // Close sidebar when clicking the close button
+// Close sidebar when clicking the close button
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   document.getElementById("overlay").classList.remove("overlay-open");
@@ -33,8 +33,8 @@ function scrollToBottom(elementSelector) {
 // Example usage
 scrollToBottom("message-history");
 
-function startRecording() {
-  console.log("Recording started");
+async function startRecording() {
+    console.log("Recording started");
     await streamTTSAudio("play ball", "ll");
     console.log("bugs");
   // Placeholder for recording start functionality

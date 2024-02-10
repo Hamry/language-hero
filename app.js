@@ -50,7 +50,7 @@ app.post('/chat/poll-gpt-response', async (req, res) => {
     const status = chat.run.status;
     if (status === 'completed') {
 	const response = await chat.getNewMessages();
-	res.status(200).json(response);)
+	res.status(200).json(response);
     } else if (status === 'failed') {
 	console.log(status);
 	console.log(chat.run);
