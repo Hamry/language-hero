@@ -48,11 +48,30 @@ function stopRecording() {
   // Placeholder for recording stop functionality
 }
 
+function handleUserTranscript(text) {
+  const container = document.getElementById("message-history");
+  const messageElement = document.createElement("div");
+  messageElement.classList.add("user-message");
+  //create inner html
+  const inner = `<img class="user-icon" src="images/Blank-user-icon.jpg" />
+    <div class="message-content">
+      <p>
+        Quieres 
+        <span
+          class="tooltip"
+          data-explanation="This verb does not need to be conjugated as it is the subject of another verb (quieres)."
+          >montas</span
+        >
+        caballos manana?
+      </p>
+    </div>`;
+  messageElement.innerHTML = inner;
+  scrollToBottom();
+}
+
 document.addEventListener("keydown", async function (event) {
   if (event.code === "Space") {
-    await handleGptResponse(
-      'Claro, aquí tienes una oración en español: "El sol brilla intensamente en el cielo azul, iluminando el paisaje montañoso."'
-    );
+    handleUserTranscript("Example User Text");
     await startRecording();
   }
 });
