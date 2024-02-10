@@ -1,4 +1,4 @@
-// Close sidebar when clicking the close button
+require("./transcript.js");// Close sidebar when clicking the close button
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   document.getElementById("overlay").classList.remove("overlay-open");
@@ -81,6 +81,22 @@ document.addEventListener("keyup", function (event) {
     stopRecording();
   }
 });
+
+document.getElementById("testGpt").addEventListener("click", async () => {
+    const messages = await queryGpt("Hola Senor Language Hero", 1, "Espanol");
+    console.log(messages);
+});
+
+
+
+document.getElementById("testTranscribe").addEventListener("click", async () => {
+    const creds = {
+	authToken: 'd32daf8e912d4dd4bf7eeab5b15585d4',
+	region: 'eastus'
+    };
+    console.log(transcribeFromMicrophone(creds.authToken, creds.region));
+});
+
 
 async function handleGptResponse(text, language = "en") {
   const container = document.getElementById("message-history");
