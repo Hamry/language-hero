@@ -122,3 +122,4 @@ async function queryGpt(userQuery, level, language) {
 
 }
 
+module.exports = queryGpt;

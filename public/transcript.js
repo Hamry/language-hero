@@ -50,4 +50,4 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion) {
     
 }
 
-module.exports = transcribeFromMicrophone;
+module.exports = { transcribeFromMicrophone };

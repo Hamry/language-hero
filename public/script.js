@@ -1,4 +1,8 @@
-require("./transcript.js");// Close sidebar when clicking the close button
+const audio = require("./audio.js");
+const queryGpt = require("./queryGpt.js");
+const transcription = require("./transcript.js");// Close sidebar when clicking the close button
+
+
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   document.getElementById("overlay").classList.remove("overlay-open");
@@ -35,7 +39,7 @@ scrollToBottom();
 
 async function startRecording() {
   console.log("Recording started");
-  await streamTTSAudio(
+  await audio.streamTTSAudio(
     'Claro, aquí tienes una oración en español: "El sol brilla intensamente en el cielo azul, iluminando el paisaje montañoso."',
     "ll"
   );
@@ -70,7 +74,8 @@ function handleUserTranscript(text) {
 }
 
 document.addEventListener("keydown", async function (event) {
-  if (event.code === "Space") {
+    if (event.code === "Space") {
+	console.log("Space")
     handleUserTranscript("Example User Text");
     await startRecording();
   }
@@ -94,7 +99,7 @@ document.getElementById("testTranscribe").addEventListener("click", async () => 
 	authToken: 'd32daf8e912d4dd4bf7eeab5b15585d4',
 	region: 'eastus'
     };
-    console.log(transcribeFromMicrophone(creds.authToken, creds.region));
+    console.log(transcription.transcribeFromMicrophone(creds.authToken, creds.region));
 });
 
 

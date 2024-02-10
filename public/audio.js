@@ -12,3 +12,5 @@ async function streamTTSAudio(text, language) {
   audioPlayer.src = "/generate-tts?text=" + encodedText + "&lang=" + language;
   audioPlayer.play();
 }
+
+module.exports = { initializeAudioPlayer, streamTTSAudio };
