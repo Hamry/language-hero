@@ -1,4 +1,4 @@
-async // Close sidebar when clicking the close button
+// Close sidebar when clicking the close button
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   document.getElementById("overlay").classList.remove("overlay-open");
@@ -25,18 +25,18 @@ document.getElementById("overlay").addEventListener("click", function () {
   this.classList.remove("overlay-open");
 });
 // Function to keep an element scrolled to the bottom
-function scrollToBottom(elementSelector) {
-  const element = document.querySelector(elementSelector);
+function scrollToBottom() {
+  const element = document.getElementById("message-history");
   element.scrollTop = element.scrollHeight;
 }
 
 // Example usage
-scrollToBottom("message-history");
+scrollToBottom();
 
-function startRecording() {
+async function startRecording() {
   console.log("Recording started");
-    await streamTTSAudio("play ball", "ll");
-    console.log("bugs");
+  await streamTTSAudio("play ball", "ll");
+  console.log("bugs");
   // Placeholder for recording start functionality
 }
 
@@ -45,10 +45,10 @@ function stopRecording() {
   // Placeholder for recording stop functionality
 }
 
-document.addEventListener('keydown', async function(event) {
-    if (event.code === 'Space') {
-        await startRecording();
-    }
+document.addEventListener("keydown", async function (event) {
+  if (event.code === "Space") {
+    await startRecording();
+  }
 });
 
 document.addEventListener("keyup", function (event) {
