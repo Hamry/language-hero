@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Hero</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">-->
+    
+</head>
+<body>
+    <nav class="navbar">
+
+        <div style="color: black;">Language Hero</div>
+        <button id="settings-btn"><i class="fas fa-cog"></i></button>
+    </nav>
+    <div class="chat-view" id="message-area">
+        <div class="message-history">
+            <div class="message"><p>Text Here from bot</p></div>
+        </div>
+    </div>
+    <button id="record-btn" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" ontouchstart="startRecording()" ontouchend="stopRecording()">Hold to Record</button>
+</body>
+</html>
