@@ -40,7 +40,7 @@ async function queryGpt(userQuery) {
 	});
     };
 
-    function pollUntilStateChange(prevState) {
+    function pollUntilComplete() {
 	return new Promise(async (resolve, reject) => {
 	    async function pollAndUpdate() {
 		console.log("polleon");
@@ -60,16 +60,15 @@ async function queryGpt(userQuery) {
 			console.log(res.status);
 			
 			// Check if the condition to stop polling is met, for example:
-			//if (res.status == "done") {
-			//    resolve(res);
-			//    clearInterval(pollInterval);
-			//    console.log("Polling stopped:", res);
-			//}
-			if (res.status != prevState) {
-			    resolve(res);
-			    clearInterval(pollInterval);
+			if (res.status == "done") {
+			   resolve(res);
+			   clearInterval(pollInterval);
+			   console.log("Polling stopped:", res);
 			}
-			
+			// if (res.status != prevState) {
+			//     resolve(res);
+			//     clearInterval(pollInterval);
+			// }			
 		    } else {
 			reject(res);
 			clearInterval(pollInterval);
@@ -89,27 +88,13 @@ async function queryGpt(userQuery) {
         await new Promise(resolve => setTimeout(resolve, 250)); // Wait for 250ms before the next poll
 	} */
 	
-
-    var thinkingState = null;
-    while (thinkingState != "done") {
-	res = await pollUntilStateChange(thinkingState)
-	    .then((res) => {		
-		const newState = res.status;
-		changeThinkingState(thinkingState, newState);
-		thinkingState = newState;
-		console.log("new state");
-		console.log(newState);
-		return res;
-	    });
-    }
-    doneThinking();
+    res = await pollUntilComplete();
     console.log('Polling complete.');
     console.log(res);
     const messages = res.newMessages;
     for (m in messages) {                                                                                                                                                                                         
         //document.getElementById('gpt-response').innerText = data.response;
 	appendMessage(messages[m].content[0].text.value,false);
-        scrollToBottom('gpt-response');                                                                                                                                                                           
     };
 
 	/*
