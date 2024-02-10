@@ -1,3 +1,21 @@
+/*user errors*/
+.red,
+.orange,
+.yellow {
+  border-radius: 0.2rem;
+}
+.red {
+  background-color: red;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
 /* Sidebar-specific styles */
 .sidebar {
   position: fixed;
@@ -174,20 +192,34 @@ html {
 }
 .bot-message p .user-message p {
   font: 100;
+  margin-left: 0.5em !important;
+  margin-right: 0.5em !important;
 }
 .message-content {
-  max-width: 60vw;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  max-width: 50vw;
   display: flex;
-  padding: 0.5em;
-  border: solid black 1px;
+
+  border: solid gray 1px;
   border-radius: 2rem;
 }
 .message-play-btn {
-  margin: 1em;
+  background-color: transparent;
+  border: none;
+  margin-top: 1em;
+  margin-bottom: 0em;
   border-radius: 9999rem;
-  height: 3em;
-  width: 5em;
-  padding: 0px;
+  margin-right: 0.5em;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+.message-play-btn i {
+  width: 1.5em;
+  height: 1.5em;
 }
 
 .chat-view {

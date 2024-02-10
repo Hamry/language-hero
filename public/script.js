@@ -1,7 +1,24 @@
 const audio = require("./audio.js");
 const queryGpt = require("./queryGpt.js");
-const transcription = require("./transcript.js");// Close sidebar when clicking the close button
+const transcription = require("./transcript.js"); // Close sidebar when clicking the close button
+let language = "english";
+let proficiency = 1;
 
+//language dropdown in sidebar alters language
+document
+  .getElementById("languageSelect")
+  .addEventListener("change", function () {
+    language = this.value;
+    console.log(`Language set to: ${language}`); // For demonstration
+  });
+
+//proficiency buttons alter proficiency
+document.querySelectorAll(".proficiency-btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    proficiency = parseInt(this.textContent) || proficiency; // Update proficiency or keep the old value if parsing fails
+    console.log(`Proficiency set to: ${proficiency}`); // For demonstration
+  });
+});
 
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
@@ -39,11 +56,12 @@ scrollToBottom();
 
 async function startRecording() {
   console.log("Recording started");
-  await audio.streamTTSAudio(
+  handleGptResponse(
     'Claro, aquí tienes una oración en español: "El sol brilla intensamente en el cielo azul, iluminando el paisaje montañoso."',
     "ll"
   );
   console.log("bugs");
+
   // Placeholder for recording start functionality
 }
 
@@ -74,9 +92,10 @@ function handleUserTranscript(text) {
 }
 
 document.addEventListener("keydown", async function (event) {
-    if (event.code === "Space") {
-	console.log("Space")
-    handleUserTranscript("Example User Text");
+  if (event.code === "Space") {
+    console.log("Space");
+    //handleUserTranscript("Example User Text");
+    //startRecording();
     await startRecording();
   }
 });
@@ -88,20 +107,22 @@ document.addEventListener("keyup", function (event) {
 });
 
 document.getElementById("testGpt").addEventListener("click", async () => {
-    const messages = await queryGpt("Hola Senor Language Hero", 1, "Espanol");
-    console.log(messages);
+  const messages = await queryGpt("Hola Senor Language Hero", 1, "Espanol");
+  console.log(messages);
 });
 
-
-
-document.getElementById("testTranscribe").addEventListener("click", async () => {
+document
+  .getElementById("testTranscribe")
+  .addEventListener("click", async (e) => {
+    e.target.classList.add("active");
     const creds = {
-	authToken: 'd32daf8e912d4dd4bf7eeab5b15585d4',
-	region: 'eastus'
+      authToken: "d32daf8e912d4dd4bf7eeab5b15585d4",
+      region: "eastus",
     };
-    console.log(transcription.transcribeFromMicrophone(creds.authToken, creds.region));
-});
-
+    console.log(
+      transcription.transcribeFromMicrophone(creds.authToken, creds.region)
+    );
+  });
 
 async function handleGptResponse(text, language = "en") {
   const container = document.getElementById("message-history");

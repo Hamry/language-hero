@@ -6,13 +6,14 @@
     <title>Language Hero</title>
 
     <script defer src="bundle.js"></script>
-    <link rel="stylesheet" href="style/tooltips.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
     <link rel="stylesheet" href="style/style.css" />
     <link rel="stylesheet" href="style/loading.css" />
+    <link rel="stylesheet" href="style/tooltips.css" />
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">-->
   </head>
   <body>
@@ -25,9 +26,9 @@
       <div class="setting-item">
         Lang:
         <select id="languageSelect">
-          <option value="en">English</option>
-          <option value="es">Spanish</option>
-          <option value="fr">French</option>
+          <option value="english">English</option>
+          <option value="spanish">Spanish</option>
+          <option value="french">French</option>
           <!-- Add more languages as needed -->
         </select>
       </div>
@@ -50,7 +51,6 @@
         </label>
       </div>
 
-
       <!-- Sidebar content goes here -->
       Settings Content
     </div>
@@ -58,7 +58,7 @@
     <nav class="navbar">
       <div style="font-size: large; color: black">Language Hero</div>
       <button id="testGpt">test gpt</button>
-      <button id="testTranscribe"> test rtrnsrefrkasjfia</button>
+      <button id="testTranscribe">test rtrnsrefrkasjfia</button>
       <button id="settings-btn"><i class="fas fa-cog"></i></button>
     </nav>
     <div class="chat-view" id="message-area">
@@ -95,7 +95,7 @@
             <p>
               This is a
               <span
-                class="tooltip"
+                class="tooltip red"
                 data-explanation="A systematic enterprise that builds and organizes knowledge in the form of testable explanations and predictions about the universe."
                 >science</span
               >
@@ -175,4 +175,3 @@
     </div>
   </body>
 </html>
- 
