@@ -9,7 +9,7 @@ async function streamTTSAudio(text, language) {
     const audioPlayer = document.getElementById('audioPlayer');
     console.log(audioPlayer);
     const encodedText = encodeURIComponent(text);
-    audioPlayer.src = '/tts?text=' + encodedText + '&lang=' + language;
+    audioPlayer.src = '/generate-tts?text=' + encodedText + '&lang=' + language;
     audioPlayer.play();        
 }
 

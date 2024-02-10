@@ -1,5 +1,6 @@
 require('dotenv').config(); // Load environment variables from .env file
 const sdk = require('microsoft-cognitiveservices-speech-sdk');
+const tts = require('./tts.js');
 
 const express = require('express');
 const app = express();
@@ -33,20 +34,45 @@ app.post('/transcribe', (req, res) => {
     
 });
 
+app.post('/chat/new-chat', async (req, res) => {
+    console.log(req.body);
+    const chat = await gpt.initializeChat();
+    res.status(200).json(chat);
+});
 /**
  * Use the openai assistants API to generate a text response to the synthesized
  * user audio by calling functions from openai.js.
  */
-app.post('/generate-openai-response', (req, res) => {});
+app.post('/chat/send-gpt-message', async (req, res) => {});
+
+app.post('/chat/poll-gpt-response', async (req, res) => {
+    const chat = await gpt.retrieveChat(req.body.chatId);
+    const status = chat.run.status;
+    if (status === 'completed') {
+	const response = await chat.getNewMessages();
+	res.status(200).json(response);)
+    } else if (status === 'failed') {
+	console.log(status);
+	console.log(chat.run);
+	res.status(500);
+    } else {
+	res.status(201);
+    }
+    
+});
 
 /**
  * Route for speech synthesis using Eleven Labs API.
  */
 app.get('/generate-tts', async (req, res) => {
-    if (req.query.speed !== undefined) {
-	const ttsStream = await streamTts(req.query.text, req.query.language, req.query.speed);
+    var ttsStream;
+    const text = decodeURIComponent(req.query.text);
+    if (req.query.speed !== undefined) {	
+	ttsStream = await tts.streamTts(text, req.query.language, req.query.speed);
     } else {
-	const ttsStream = await streamTts(req.query.text, req.query.language);
+	console.log("AAA");
+	ttsStream = await tts.streamTts(text, req.query.language);
+//	console.log(ttsStream);
     }
     
     ttsStream.pipe(res);

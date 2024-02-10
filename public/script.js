@@ -1,4 +1,4 @@
-// Close sidebar when clicking the close button
+async // Close sidebar when clicking the close button
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   document.getElementById("overlay").classList.remove("overlay-open");
@@ -35,6 +35,8 @@ scrollToBottom("message-history");
 
 function startRecording() {
   console.log("Recording started");
+    await streamTTSAudio("play ball", "ll");
+    console.log("bugs");
   // Placeholder for recording start functionality
 }
 
@@ -43,10 +45,10 @@ function stopRecording() {
   // Placeholder for recording stop functionality
 }
 
-document.addEventListener("keydown", function (event) {
-  if (event.code === "Space") {
-    startRecording();
-  }
+document.addEventListener('keydown', async function(event) {
+    if (event.code === 'Space') {
+        await startRecording();
+    }
 });
 
 document.addEventListener("keyup", function (event) {
