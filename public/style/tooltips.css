@@ -1,0 +1,23 @@
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(data-explanation);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 1;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  display: none;
+}
+
+.tooltip:hover::after {
+  display: block;
+}

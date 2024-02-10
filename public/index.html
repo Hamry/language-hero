@@ -8,12 +8,13 @@
     <script src="queryGpt.js"></script>
     <script src="transcript-bundle.js"></script>
     <script defer src="script.js"></script>
-
+    <link rel="stylesheet" href="style/tooltips.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
     <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="style/loading.css" />
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">-->
   </head>
   <body>
@@ -73,9 +74,20 @@
                 class="fa fa-play"
               ></i>
             </button>
+            <!-- <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div> -->
+
             <p>
-              Text Here from bot
-              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+              Claro, aquí tienes una oración en español: "El sol brilla
+              intensamente en el cielo azul, iluminando el paisaje montañoso."
             </p>
           </div>
         </div>
@@ -83,8 +95,13 @@
           <img class="user-icon" src="images/Blank-user-icon.jpg" />
           <div class="message-content">
             <p>
-              Text Here from user
-              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+              This is a
+              <span
+                class="tooltip"
+                data-explanation="A systematic enterprise that builds and organizes knowledge in the form of testable explanations and predictions about the universe."
+                >science</span
+              >
+              website.
             </p>
           </div>
         </div>
