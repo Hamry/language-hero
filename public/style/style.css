@@ -6,48 +6,71 @@ html {
   width: 100%;
   height: 100%;
   font-family: Arial, sans-serif;
-
+  justify-content: center;
 }
 
-.message {
-    display: flex;
-    overflow-warp: break-word;
-    align-items: flex-end;
-    margin-bottom: 10px;
+.user-icon,
+.bot-icon {
+  border: solid black 1px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.bot-message,
+.user-message {
+  max-width: 60vw;
+  display: flex;
+  flex-direction: row;
+  overflow-wrap: break-word;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+.bot-message {
+  justify-content: left;
+}
+.bot-message p .user-message p {
+  font: 100;
+}
+.message-content {
+  display: flex;
+  padding: 1em;
+  border: solid black 1px;
+  border-radius: 1rem;
+}
+.message-play-btn {
+  border-radius: 9999rem;
 }
 
 .chat-view {
-    height: inherit;
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    margin-right: 15vw;
+  height: inherit;
+  display: block;
+
+  margin-right: 15vw;
 }
 .message-history {
-
-    max-height:80%;
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    overflow-wrap: break-word;
-    padding: 1em;
-    flex-direction: column-reverse;
+  max-height: 80%;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  padding: 1em;
+  flex-direction: column-reverse;
 }
-
 
 h3 {
-    margin-bottom:0px !important;
+  margin-bottom: 0px !important;
 }
 .navbar {
-    padding: 1em;
-    background-color:#218838;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  border-bottom: dashed black 1px;
+  padding: 1em;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   max-width: 100%;
 }
 .navbar-brand {
-    
   margin-left: 2vw;
 }
 
@@ -60,8 +83,10 @@ h3 {
 }
 
 #record-btn {
+  justify-content: center;
+  border-radius: 3rem;
   display: block;
-  width: 100%;
+  width: auto;
   padding: 20px;
   background-color: #28a745;
   color: white;
@@ -76,8 +101,8 @@ h3 {
 
 #settings-btn {
   background: black;
-  border: solid black 1px;;
-  border-radius: .5rem;
+  border: solid black 1px;
+  border-radius: 0.5rem;
   color: white;
   /*font-size: 24px;*/
   height: 2em;
@@ -88,5 +113,5 @@ h3 {
   outline: none;
 }
 button {
-    margin:0px;
+  margin: 0px;
 }
