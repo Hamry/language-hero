@@ -1,3 +1,138 @@
+/* Sidebar-specific styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -25%; /* Start off-screen to the right */
+  width: 25%;
+  height: 100%;
+  background-color: #f4f4f4;
+  transition: right 0.3s ease;
+  z-index: 2; /* Higher z-index than overlay */
+  padding: 20px; /* Add padding for internal spacing */
+  box-sizing: border-box; /* Ensure padding does not affect overall width */
+}
+#languageSelect {
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #333;
+  -webkit-appearance: none; /* Remove default styling */
+  -moz-appearance: none; /* Remove default styling */
+  appearance: none; /* Remove default styling */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 4 5"><path fill="%23333" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+.sidebar .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.sidebar .setting-item {
+  margin: 20px 0;
+  font-size: 16px;
+}
+
+.sidebar .proficiency-btn {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+/* Light/Dark Mode Switch inside the sidebar */
+.sidebar .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.sidebar .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+}
+
+.sidebar .slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+.sidebar input:checked + .slider {
+  background-color: #2196f3;
+}
+
+.sidebar input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+.sidebar input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Rounded sliders for the sidebar */
+.sidebar .slider.round {
+  border-radius: 34px;
+}
+
+.sidebar .slider.round:before {
+  border-radius: 50%;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -35%; /* Start off-screen to the right */
+  width: 35%;
+  height: 100%;
+  background-color: #f4f4f4;
+  transition: right 0.3s ease;
+  z-index: 2;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1; /* Ensure it's above the main content but below the sidebar */
+  transition: right 0.3s ease;
+}
+
+.content {
+  padding: 20px;
+}
+
+/* Class to move sidebar into view from the right */
+.sidebar-open {
+  right: 0;
+}
+
+/* Class to show the overlay */
+.overlay-open {
+  display: block;
+}
 body,
 html {
   margin: 0 !important;
@@ -5,8 +140,11 @@ html {
   max-width: 100%;
   width: 100%;
   height: 100%;
+  max-height: 100vh;
   font-family: Arial, sans-serif;
-  justify-content: center;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-icon,
@@ -15,47 +153,57 @@ html {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin: 10px;
 }
 .bot-message,
 .user-message {
-  max-width: 60vw;
+  max-width: 100%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   overflow-wrap: break-word;
+  word-break: break-all;
   align-items: flex-end;
   margin-bottom: 10px;
 }
 .bot-message {
   justify-content: left;
 }
+.user-message {
+  flex-direction: row-reverse;
+}
 .bot-message p .user-message p {
   font: 100;
 }
 .message-content {
+  max-width: 60vw;
   display: flex;
-  padding: 1em;
+  padding: 0.5em;
   border: solid black 1px;
-  border-radius: 1rem;
+  border-radius: 2rem;
 }
 .message-play-btn {
+  margin: 1em;
   border-radius: 9999rem;
+  height: 3em;
+  width: 5em;
+  padding: 0px;
 }
 
 .chat-view {
-  height: inherit;
-  display: block;
+  height: 70vh;
 
-  margin-right: 15vw;
+  display: block;
 }
 .message-history {
-  max-height: 80%;
+  max-height: 70vh;
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
   overflow-wrap: break-word;
   padding: 1em;
   flex-direction: column-reverse;
+  max-width: 100%;
 }
 
 h3 {
@@ -69,13 +217,13 @@ h3 {
   flex-direction: row;
   justify-content: space-between;
   max-width: 100%;
+  max-height: 20vh;
 }
 .navbar-brand {
   margin-left: 2vw;
 }
 
 .message-area {
-  height: 40%;
   overflow-y: scroll;
   padding: 20px;
   margin: 20px 0;
@@ -86,8 +234,9 @@ h3 {
   justify-content: center;
   border-radius: 3rem;
   display: block;
-  width: auto;
-  padding: 20px;
+  width: 10vh;
+  height: 10vh;
+  padding: 0px;
   background-color: #28a745;
   color: white;
   font-size: 16px;

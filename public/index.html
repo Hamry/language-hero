@@ -14,6 +14,42 @@
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">-->
   </head>
   <body>
+    <div id="sidebar" class="sidebar">
+      <!-- Close button -->
+      <button id="closeBtn" class="close-btn">X</button>
+
+      <!-- Language Dropdown -->
+      <div class="setting-item">
+        Lang:
+        <select id="languageSelect">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <!-- Add more languages as needed -->
+        </select>
+      </div>
+
+      <!-- Proficiency Buttons -->
+      <div class="setting-item">
+        Proficiency:
+        <button class="proficiency-btn">1</button>
+        <button class="proficiency-btn">2</button>
+        <button class="proficiency-btn">3</button>
+        <button class="proficiency-btn">4</button>
+      </div>
+
+      <!-- Light/Dark Mode Switch -->
+      <div class="setting-item">
+        Light/Dark mode:
+        <label class="switch">
+          <input type="checkbox" id="themeSwitch" />
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <!-- Sidebar content goes here -->
+      Settings Content
+    </div>
+    <div id="overlay" class="overlay"></div>
     <nav class="navbar">
       <div style="font-size: large; color: black">Language Hero</div>
       <button id="settings-btn"><i class="fas fa-cog"></i></button>
@@ -24,7 +60,10 @@
           <img class="bot-icon" src="images/Blank-user-icon.jpg" />
           <div class="message-content">
             <button class="message-play-btn">
-              <i class="fa fa-play"></i>
+              <i
+                style="position: ablsolute; top: auto; left: auto"
+                class="fa fa-play"
+              ></i>
             </button>
             <p>
               Text Here from bot
@@ -32,9 +71,74 @@
             </p>
           </div>
         </div>
+        <div class="user-message">
+          <img class="user-icon" src="images/Blank-user-icon.jpg" />
+          <div class="message-content">
+            <p>
+              Text Here from user
+              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+          </div>
+        </div>
+        <div class="bot-message">
+          <img class="bot-icon" src="images/Blank-user-icon.jpg" />
+          <div class="message-content">
+            <button class="message-play-btn">
+              <i
+                style="position: ablsolute; top: auto; left: auto"
+                class="fa fa-play"
+              ></i>
+            </button>
+            <p>
+              Text Here from bot
+              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+          </div>
+        </div>
+        <div class="user-message">
+          <img class="user-icon" src="images/Blank-user-icon.jpg" />
+          <div class="message-content">
+            <p>
+              Text Here from user
+              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+          </div>
+        </div>
+        <div class="bot-message">
+          <img class="bot-icon" src="images/Blank-user-icon.jpg" />
+          <div class="message-content">
+            <button class="message-play-btn">
+              <i
+                style="position: ablsolute; top: auto; left: auto"
+                class="fa fa-play"
+              ></i>
+            </button>
+            <p>
+              Text Here from bot
+              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+          </div>
+        </div>
+        <div class="user-message">
+          <img class="user-icon" src="images/Blank-user-icon.jpg" />
+          <div class="message-content">
+            <p>
+              Text Here from user
+              aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <div style="display: flex; flex-direction: row; justify-content: center">
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        max-height: 10vh;
+        margin-bottom: 1em;
+      "
+    >
       <button
         id="record-btn"
         onmousedown="startRecording()"
