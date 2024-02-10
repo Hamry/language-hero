@@ -2,7 +2,6 @@ const audio = require("./audio.js");
 const queryGpt = require("./queryGpt.js");
 const transcription = require("./transcript.js");// Close sidebar when clicking the close button
 
-
 document.getElementById("closeBtn").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   document.getElementById("overlay").classList.remove("overlay-open");
@@ -99,7 +98,7 @@ document.getElementById("testTranscribe").addEventListener("click", async () => 
 	authToken: 'd32daf8e912d4dd4bf7eeab5b15585d4',
 	region: 'eastus'
     };
-    console.log(transcription.transcribeFromMicrophone(creds.authToken, creds.region));
+    console.log(transcription.transcribeFromMicrophone(creds.authToken, creds.region, "spanish"));
 });
 
 
