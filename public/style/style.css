@@ -1,3 +1,6 @@
+.sound-wave {
+  width: 10em;
+}
 .translate-btn {
   background-color: #f5f5dc; /* Light cream background */
   color: #333; /* Text color */
@@ -296,9 +299,9 @@ h3 {
   cursor: pointer;
 }
 
-/* #record-btn:active {
+#record-btn:active {
   background-color: red;
-} */
+}
 
 #settings-btn {
   background: black;

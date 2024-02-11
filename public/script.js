@@ -358,6 +358,7 @@ async function handleGptResponse(text, language = "en") {
 
     // Create the play button
     const playButton = document.createElement("button");
+    playButton.id = "replay" + number;
     playButton.className = "message-play-btn";
     playButton.onclick = function () {
       replay(number);
@@ -375,7 +376,8 @@ async function handleGptResponse(text, language = "en") {
     // Create the image for the wave
     const waveImage = document.createElement("img");
     waveImage.id = `wavepng${number}`;
-    waveImage.src = "/images/download.png";
+    waveImage.src = "/images/sound-wave.png";
+    waveImage.className = "sound-wave";
 
     // Create the translate button
     const translateButton = document.createElement("button");
