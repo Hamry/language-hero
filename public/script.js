@@ -228,8 +228,8 @@ async function transcribeHandler(e) {
     e.target.classList.add("active");
 
     const creds = {
-      authToken: "d32daf8e912d4dd4bf7eeab5b15585d4",
-      region: "eastus",
+	authToken: "94986579b6e14974bebd4777148dd132",
+      region: "eastus2",
     };
     stopTranscript = transcription.transcribeFromMicrophone(
       creds.authToken,
@@ -301,15 +301,18 @@ async function handleGptResponse(text, language = "en") {
   //loadingElement.style.display = 'block';
 
   try {
-    console.log("sup");
-    console.log(text);
-    const delim = "\n";
-    const response = text.slice(text.indexOf(delim) + delim.length);
-    const annotated = text.slice(0, text.indexOf(delim));
-    const highlighted = parseAnnotations(annotated);
-    const lastMessage = document.getElementById("last-message");
+      console.log("sup");
+      console.log(text);
+      const delim = "\n";
+      const response = text.slice(text.indexOf(delim) + delim.length);
+      console.log(response);
+      const annotated = text.slice(0, text.indexOf(delim));
+      console.log(annotated);
+      const highlighted = parseAnnotations(annotated);
+      console.log(highlighted);
+      const lastMessage = document.getElementById("last-message");
 
-    lastMessage.innerHTML = highlighted;
+      lastMessage.innerHTML = highlighted;
     // Assuming language is a global variable or passed as an argument
     //   audioPlayer.src = `/generate-tts?text=${encodedText}&lang=$(language)`;
 
@@ -321,8 +324,9 @@ async function handleGptResponse(text, language = "en") {
 
     // // Play the audio
     //   audioPlayer.play();
-    const encodedText = encodeURIComponent(response);
-    const audioBlobUrl = await audio.fetchAndPlayTTS(encodedText, language);
+      const encodedText = encodeURIComponent(response);
+      console.log(encodedText);
+      const audioBlobUrl = await audio.fetchAndPlayTTS(encodedText, language);
 
     messageAudioPlayer.src = audioBlobUrl;
     // Hide loading element
@@ -343,7 +347,7 @@ async function handleGptResponse(text, language = "en") {
             <i class="fa fa-play" style=""></i>
         </button>
 
-        <p class="hidden">${text}</p>
+        <p class="hidden">${response}</p>
     </div>
 `
     );
@@ -371,7 +375,7 @@ async function handleGptResponse(text, language = "en") {
     const messageParagraph = document.createElement("p");
     messageParagraph.id = `message${number}`;
     messageParagraph.className = "hidden";
-    messageParagraph.textContent = text;
+    messageParagraph.textContent = response;
 
     // Create the image for the wave
     const waveImage = document.createElement("img");
