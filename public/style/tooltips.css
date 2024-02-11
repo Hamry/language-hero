@@ -1,23 +1,31 @@
 .tooltip {
   position: relative;
   cursor: pointer;
+  overflow-wrap: break-word;
+  word-break: break-word; /* Adjusted for clarity */
+  max-width: 50em;
 }
 
 .tooltip::after {
+  border: solid blue 1px;
   content: attr(data-explanation);
   position: absolute;
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  white-space: nowrap;
+  white-space: normal; /* Adjusted for better text handling */
   z-index: 1;
-  background-color: black;
-  color: white;
-  padding: 5px;
+  background-color: white;
+  color: black;
+  padding: 2px;
   border-radius: 4px;
   display: none;
+  min-width: 300px; /* Example min-width */
+  max-width: 500px; /* Example max-width for better control */
+  font-size: small;
 }
 
 .tooltip:hover::after {
   display: block;
+  height: fit-content;
 }
