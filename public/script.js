@@ -28,7 +28,7 @@ function showText(number) {
 const playTtsButton = document.getElementById("playTts");
 console.log(playTtsButton);
 const replayTtsButton = document.getElementById("replayTts");
-console.log(replayTtsButton);
+//console.log(replayTtsButton);
 
 playTtsButton.addEventListener("click", function () {
   audio.fetchAndPlayTTS();
