@@ -156,7 +156,7 @@ async function startRecording() {
   console.log("Recording started");
   handleGptResponse(
     'Claro, aquí tienes una oración en español: "El sol brilla intensamente en el cielo azul, iluminando el paisaje montañoso."',
-    "ll"
+    language
   );
   console.log("bugs");
 
@@ -223,15 +223,16 @@ document.getElementById("testGpt").addEventListener("click", async () => {
   console.log(parseAnnotations(message));
   // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
 });
+
 async function transcribeHandler(e) {
   console.log("Event Target:", e.target);
   console.log("Current Target:", e.currentTarget);
   e.stopPropagation();
   if (e.target.classList.contains("active")) {
-    console.log("Trying to call a stop");
-    stopTranscript();
-    //stopTranscript();
-    e.target.classList.toggle("active");
+      console.log("Trying to call a stop");
+      stopTranscript();
+      //stopTranscript();
+      e.target.classList.toggle("active");
   } else {
     e.target.removeEventListener("click", transcribeHandler);
     e.target.classList.add("active");
@@ -239,15 +240,29 @@ async function transcribeHandler(e) {
       authToken: "d32daf8e912d4dd4bf7eeab5b15585d4",
       region: "eastus",
     };
-    stopTranscript = transcription.transcribeFromMicrophone(
-      creds.authToken,
-      creds.region,
-      "spanish"
-    );
-    e.target.addEventListener("click", transcribeHandler);
-    console.log();
+      stopTranscript = async () => {
+
+	  transcription.transcribeFromMicrophone(
+	      creds.authToken,
+	      creds.region,
+	      "spanish"
+	  );
+	  const lastMessage = document.getElementById("last-message");
+	  const lastMessageText = lastMessage.textContent;
+	  console.log(lastMessageText);
+	  const messageHistory = document.getElementById("message-history");
+	  await queryGpt(lastMessageText, proficiency, language, messageHistory.childNodes.length == 1).then(
+	      (messages) => {
+		  console.log(messages);
+		  return handleGptResponse(messages[0].content[0].text.value, language);
+	      })
+	  lastMessage.id = "message" + Date.now();
+      };
+      e.target.addEventListener("click", transcribeHandler);
+      console.log();
   }
 }
+
 document
   .getElementById("record-btn")
   .addEventListener("click", transcribeHandler);
@@ -283,7 +298,14 @@ async function handleGptResponse(text, language = "en") {
   //loadingElement.style.display = 'block';
 
   try {
-    const encodedText = encodeURIComponent(text);
+
+      const delim = "\n";
+      const response = text.slice(text.indexOf(delim) + delim.length);
+      const annotated = text.slice(0, text.indexOf(delim));
+      const highlighted = parseAnnotations(annotated);
+      const lastMessage = document.getElementById("last-message");
+
+      lastMessage.innerHTML = highlighted;
     // Assuming language is a global variable or passed as an argument
     //   audioPlayer.src = `/generate-tts?text=${encodedText}&lang=$(language)`;
 
@@ -295,8 +317,8 @@ async function handleGptResponse(text, language = "en") {
 
     // // Play the audio
     //   audioPlayer.play();
-
-    const audioBlobUrl = await fetchAndPlayTTS(encodedText, language);
+            const encodedText = encodeURIComponent(response);
+      const audioBlobUrl = await audio.fetchAndPlayTTS(encodedText, language);
 
     messageAudioPlayer.src = audioBlobUrl;
     // Hide loading element
@@ -311,7 +333,7 @@ async function handleGptResponse(text, language = "en") {
     <div id= "latest-` +
         number +
         `" class="message-content">
-        <button class="message-play-btn" onclick="audioPlayer.play()">
+        <button class="message-play-btn" onclick="replay(`+ number + `)">
             <i class="fa fa-play" style=""></i>
         </button>
 
@@ -360,3 +382,4 @@ function replay(playerNumber) {
   player = document.getElementById("player" + playerNumber);
   player.play();
 }
+

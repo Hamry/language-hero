@@ -71,7 +71,8 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
   const messageContent = document.createElement("div");
   messageContent.classList.add("message-content");
   const p = document.createElement("p");
-  p.setAttribute("lang", "es");
+    p.setAttribute("lang", "es");
+    p.id = "last-message";
   let inner = `
     
       <p lang="es">
@@ -85,11 +86,11 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
   //pronunciationAssessmentConfig.applyTo(recognizer);
   console.log("Pronunciation assessment config applied");
   recognizer.recognizing = (s, e) => {
-    p.textContent = currentString + e.result.text;
+      p.textContent = currentString + e.result.text;
 
-    console.log(e.privResult);
-    console.log(`RECOGNIZING: Text=${e.result.text}`);
-    console.log("aaa");
+      console.log(e.privResult);
+      console.log(`RECOGNIZING: Text=${e.result.text}`);
+      console.log("aaa");
   };
 
   recognizer.recognized = (s, e) => {
