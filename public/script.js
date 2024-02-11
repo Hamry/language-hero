@@ -25,6 +25,37 @@ function showText(number) {
   }
 }
 
+const playTtsButton = document.getElementById("playTts");
+console.log(playTtsButton);
+const replayTtsButton = document.getElementById("replayTts");
+console.log(replayTtsButton);
+
+playTtsButton.addEventListener("click", function () {
+  audio.fetchAndPlayTTS();
+});
+
+replayTtsButton.addEventListener("click", function () {
+  audio.replayTTS();
+});
+
+function createAudioBitVisualization(containerId, numBits, maxHeight) {
+  var container = document.getElementById(containerId);
+  // Ensure the container has a position style set to relative in your CSS
+  for (var i = 0; i < numBits; i++) {
+    var bitWidth = 5; // Set a fixed width for each audio bit, for example, 5 pixels
+    var height = Math.random() * maxHeight;
+    var posX = Math.random() * (container.offsetWidth - bitWidth) + 20; // Adjust posX so bits don't overflow
+    var bit = document.createElement("div");
+    bit.className = "audioBit";
+    bit.style.position = "absolute"; // Bits must be absolutely positioned within the container
+    bit.style.height = height + "px";
+    bit.style.width = bitWidth + "px"; // Set the width for each bit
+    bit.style.left = posX + "px";
+    bit.style.bottom = "20px"; // Position from the bottom of the container
+    container.appendChild(bit);
+  }
+}
+
 //language dropdown in sidebar alters language
 document
   .getElementById("languageSelect")
@@ -225,7 +256,9 @@ async function handleGptResponse(text, language = "en") {
   const container = document.getElementById("message-history");
 
   //const loadingElement = document.getElementById("loading");
-  const audioPlayer = document.getElementById("audioPlayer");
+  const messageAudioPlayer = document.createElement("audio");
+  messageAudioPlayer.controls = true;
+
   const messageElement = document.createElement("div");
   messageElement.classList.add("bot-message");
   messageElement.innerHTML = `
@@ -252,22 +285,26 @@ async function handleGptResponse(text, language = "en") {
   try {
     const encodedText = encodeURIComponent(text);
     // Assuming language is a global variable or passed as an argument
-    audioPlayer.src = `/generate-tts?text=${encodedText}&lang=ll`;
+    //   audioPlayer.src = `/generate-tts?text=${encodedText}&lang=$(language)`;
 
-    // Wait for the audio to be loaded
-    await new Promise((resolve, reject) => {
-      audioPlayer.onloadeddata = () => resolve();
-      audioPlayer.onerror = (e) => reject(e);
-    });
+    // // Wait for the audio to be loaded
+    // await new Promise((resolve, reject) => {
+    //   audioPlayer.onloadeddata = () => resolve();
+    //   audioPlayer.onerror = (e) => reject(e);
+    // });
 
-    // Play the audio
-    audioPlayer.play();
+    // // Play the audio
+    //   audioPlayer.play();
 
+    const audioBlobUrl = await fetchAndPlayTTS(encodedText, language);
+
+    messageAudioPlayer.src = audioBlobUrl;
     // Hide loading element
     //loadingElement.style.display = 'none';
 
     // Create and append the message element
     let number = document.getElementById("message-history").childElementCount;
+    messageAudioPlayer.id = "player" + number;
     console.log(
       `
     <img class="bot-icon" src="images/Blank-user-icon.jpg" />
@@ -317,4 +354,9 @@ async function handleGptResponse(text, language = "en") {
     loadingElement.style.display = "none";
     alert("Failed to load audio. Please try again.");
   }
+}
+
+function replay(playerNumber) {
+  player = document.getElementById("player" + playerNumber);
+  player.play();
 }
