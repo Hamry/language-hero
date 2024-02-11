@@ -1,8 +1,8 @@
 var currentChatId = null;
 var languageHeroId = null;
 
-async function queryGpt(userQuery, level, language) {
-    if (currentChatId == null) {
+async function queryGpt(userQuery, level, language, isNewChat) {
+    if (currentChatId === null || isNewChat) {
 	console.log("mugsy");
 	const data = await fetch('/chat/new-chat', {
             method: 'POST',
@@ -102,7 +102,7 @@ async function queryGpt(userQuery, level, language) {
     res = await pollUntilComplete();
     console.log('Polling complete.');
     console.log(res);
-    const messages = res.newMessages;
+    const messages = res.messages;
     return messages;
 
 	/*
