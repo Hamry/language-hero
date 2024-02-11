@@ -28054,10 +28054,32 @@ async function transcribeHandler(e) {
     stopTranscript = transcription.transcribeFromMicrophone(
       creds.authToken,
       creds.region,
-      "spanish"
+      language
     );
     linkTranscriptionToGPT = async () => {
       stopTranscript();
+      const container = document.getElementById("message-history");
+
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("bot-message");
+      messageElement.innerHTML = `
+          <img class="bot-icon" src="images/Blank-user-icon.jpg" />
+          <div id="latest"class="message-content">
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          <div class="wave"></div>
+          </div>
+      `;
+
+      container.appendChild(messageElement);
+      scrollToBottom();
       const lastMessage = document.getElementById("last-message");
       const lastMessageText = lastMessage.textContent;
       console.log(lastMessageText);
@@ -28077,37 +28099,23 @@ async function transcribeHandler(e) {
     console.log();
   }
 }
-
+function replay(playerNumber) {
+  player = document.getElementById("player" + playerNumber);
+  player.play();
+}
 document
   .getElementById("record-btn")
   .addEventListener("click", transcribeHandler);
 
 async function handleGptResponse(text, language = "en") {
-  const container = document.getElementById("message-history");
+  //const container = document.getElementById("message-history");
 
   //const loadingElement = document.getElementById("loading");
   const messageAudioPlayer = document.createElement("audio");
   messageAudioPlayer.controls = true;
 
-  const messageElement = document.createElement("div");
-  messageElement.classList.add("bot-message");
-  messageElement.innerHTML = `
-          <img class="bot-icon" src="images/Blank-user-icon.jpg" />
-          <div class="message-content">
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          <div class="wave"></div>
-          </div>
-      `;
+  const messageElement = document.getElementById("latest").parentNode;
 
-  container.appendChild(messageElement);
   scrollToBottom();
   // Show loading element
   //loadingElement.style.display = 'block';
@@ -28157,27 +28165,74 @@ async function handleGptResponse(text, language = "en") {
     </div>
 `
     );
-    messageElement.innerHTML =
-      `
-            <img class="bot-icon" src="images/Blank-user-icon.jpg" />
-            <div id= "latest-` +
-      number +
-      `" class="message-content">
-                <button class="message-play-btn" onclick="audioPlayer.play()">
-                    <i class="fa fa-play" style=""></i>
-                </button>
+    const botIcon = document.createElement("img");
+    botIcon.className = "bot-icon";
+    botIcon.src = "images/Blank-user-icon.jpg";
 
-                <p id="message` +
-      number +
-      `" class="hidden">${text}</p>
-                <img id="wavepng` +
-      number +
-      `" src="/images/download.png"/>
-                <button id="text-btn-` +
-      number +
-      `" class="translate-btn" >T</button>
-            </div>
-        `;
+    // Create the message content container
+    const messageContent = document.createElement("div");
+    messageContent.id = `latest-${number}`;
+    messageContent.className = "message-content";
+
+    // Create the play button
+    const playButton = document.createElement("button");
+    playButton.className = "message-play-btn";
+    playButton.onclick = function () {
+      replay(number);
+    };
+    const playIcon = document.createElement("i");
+    playIcon.className = "fa fa-play";
+    playButton.appendChild(playIcon);
+
+    // Create the paragraph for the message
+    const messageParagraph = document.createElement("p");
+    messageParagraph.id = `message${number}`;
+    messageParagraph.className = "hidden";
+    messageParagraph.textContent = text;
+
+    // Create the image for the wave
+    const waveImage = document.createElement("img");
+    waveImage.id = `wavepng${number}`;
+    waveImage.src = "/images/download.png";
+
+    // Create the translate button
+    const translateButton = document.createElement("button");
+    translateButton.id = `text-btn-${number}`;
+    translateButton.className = "translate-btn";
+    translateButton.textContent = "T";
+    messageElement.innerHTML = "";
+
+    // Append all elements to the message content container
+    messageContent.appendChild(playButton);
+    messageContent.appendChild(messageParagraph);
+    messageContent.appendChild(waveImage);
+    messageContent.appendChild(translateButton);
+
+    // Append the bot icon and message content container to the container
+    messageElement.appendChild(botIcon);
+    messageElement.appendChild(messageContent);
+
+    // messageElement.innerHTML =
+    //   `
+    //         <img class="bot-icon" src="images/Blank-user-icon.jpg" />
+    //         <div id= "latest-` +
+    //   number +
+    //   `" class="message-content">
+    //             <button class="message-play-btn" onclick="replay(${number})">
+    //                 <i class="fa fa-play" style=""></i>
+    //             </button>
+
+    //             <p id="message` +
+    //   number +
+    //   `" class="hidden">${text}</p>
+    //             <img id="wavepng` +
+    //   number +
+    //   `" src="/images/download.png"/>
+    //             <button id="text-btn-` +
+    //   number +
+    //   `" class="translate-btn" >T</button>
+    //         </div>
+    //     `;
 
     document
       .getElementById("text-btn-" + number)
@@ -28192,11 +28247,6 @@ async function handleGptResponse(text, language = "en") {
     loadingElement.style.display = "none";
     alert("Failed to load audio. Please try again.");
   }
-}
-
-function replay(playerNumber) {
-  player = document.getElementById("player" + playerNumber);
-  player.play();
 }
 
 },{"./audio.js":269,"./parseAnnotations.js":270,"./queryGpt.js":271,"./transcript.js":273}],273:[function(require,module,exports){
