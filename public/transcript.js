@@ -62,30 +62,31 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
   const container = document.getElementById("message-history");
   const messageElement = document.createElement("div");
   messageElement.classList.add("user-message");
+  const img = document.createElement("img");
+  img.classList.add("user-icon");
+  img.src = "images/Blank-user-icon.jpg";
+  messageElement.appendChild(img);
   let currentString = "";
   //create inner html
-  let inner = `<img class="user-icon" src="images/Blank-user-icon.jpg" />
-    <div class="message-content">
-      <p>
-        
+  const messageContent = document.createElement("div");
+  messageContent.classList.add("message-content");
+  const p = document.createElement("p");
+  p.setAttribute("lang", "es");
+  let inner = `
+    
+      <p lang="es">
+
       </p>
-    </div>`;
-  messageElement.innerHTML = inner;
+    `;
+
+  messageContent.appendChild(p);
+  messageElement.appendChild(messageContent);
   container.appendChild(messageElement);
   //pronunciationAssessmentConfig.applyTo(recognizer);
   console.log("Pronunciation assessment config applied");
   recognizer.recognizing = (s, e) => {
-    inner =
-      `<img class="user-icon" src="images/Blank-user-icon.jpg" />
-    <div class="message-content">
-      <p>
-        ` +
-      currentString +
-      e.result.text +
-      `
-      </p>
-    </div>`;
-    messageElement.innerHTML = inner;
+    p.textContent = currentString + e.result.text;
+
     console.log(e.privResult);
     console.log(`RECOGNIZING: Text=${e.result.text}`);
     console.log("aaa");
@@ -95,8 +96,10 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
     if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
       //	    let pronunciationAssessmentResult = SpeechSDK.PronunciationAssessmentResult.fromResult(e.result);
       console.log(`RECOGNIZED: Text=${e.result.text}`);
-      currentString += e.result.text;
+      currentString = currentString + " " + e.result.text;
+      p.textContent = currentString;
       console.log("Pronunciation: ");
+      console.log("");
       //	    console.log(pronunciationAssessmentResult);
     } else if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
       console.log("NOMATCH: Speech could not be recognized.");
@@ -115,6 +118,13 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
       console.error(`ERROR: ${err}`);
     }
   );
+  return function () {
+    console.log("Recognition tried to end");
+    recognizer.stopContinuousRecognitionAsync(() => {
+      console.log("transcription stopped");
+    });
+    //	var pronunciationAssessmentResultJson = speechRecognitionResult.properties.getProperty(SpeechSDK.PropertyId.SpeechServiceResponse_JsonResult);
+  };
 
   // Stop the recognition after some time (e.g., 30 seconds)
   // setTimeout(() => {

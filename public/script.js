@@ -25,41 +25,57 @@ function showText(number) {
   }
 }
 
-function createAudioBitVisualization(containerId, numBits, maxHeight) {
-  var container = document.getElementById(containerId);
-  // Ensure the container has a position style set to relative in your CSS
-  for (var i = 0; i < numBits; i++) {
-    var bitWidth = 5; // Set a fixed width for each audio bit, for example, 5 pixels
-    var height = Math.random() * maxHeight;
-    var posX = Math.random() * (container.offsetWidth - bitWidth) + 20; // Adjust posX so bits don't overflow
-    var bit = document.createElement("div");
-    bit.className = "audioBit";
-    bit.style.position = "absolute"; // Bits must be absolutely positioned within the container
-    bit.style.height = height + "px";
-    bit.style.width = bitWidth + "px"; // Set the width for each bit
-    bit.style.left = posX + "px";
-    bit.style.bottom = "20px"; // Position from the bottom of the container
-    container.appendChild(bit);
-  }
-}
-
 //language dropdown in sidebar alters language
 document
   .getElementById("languageSelect")
   .addEventListener("change", function () {
     language = this.value;
-      console.log(`Language set to: ${language}`); // For demonstration
-      clearChat();
+    let languageCode;
+    switch (language) {
+      case "english":
+        languageCode = "en";
+        break;
+      case "french":
+        languageCode = "fr";
+        break;
+      case "german":
+        languageCode = "de";
+        break;
+      case "italian":
+        languageCode = "it";
+        break;
+      case "portuguese":
+        languageCode = "pt";
+        break;
+      case "russian":
+        languageCode = "ru";
+        break;
+      case "spanish":
+        languageCode = "es";
+        break;
+      case "turkish":
+        languageCode = "tr";
+        break;
+      default:
+        languageCode = "en";
+        break;
+    }
+    var paragraphs = document.querySelectorAll("p");
+    for (var i = 0; i < paragraphs.length; i++) {
+      // Set the lang attribute to the desired value, e.g., 'en'
+      paragraphs[i].setAttribute("lang", "languageCode");
+    }
+    console.log(`Language set to: ${language}`); // For demonstration
+    clearChat();
   });
 
 //proficiency buttons alter proficiency
 document.querySelectorAll(".proficiency-btn").forEach((button) => {
   button.addEventListener("click", function () {
-      proficiency = parseInt(this.textContent) || proficiency; // Update proficiency or keep the old value if parsing fails
-      console.log(`Proficiency set to: ${proficiency}`); // For demonstration
-      clearChat();
+    proficiency = parseInt(this.textContent) || proficiency; // Update proficiency or keep the old value if parsing fails
+    console.log(`Proficiency set to: ${proficiency}`); // For demonstration
+    clearChat();
   });
-
 });
 
 document.getElementById("closeBtn").addEventListener("click", function () {
@@ -70,9 +86,9 @@ document.getElementById("closeBtn").addEventListener("click", function () {
 // Example: Toggle light/dark mode (simplified version)
 document.getElementById("themeSwitch").addEventListener("change", function (e) {
   if (e.target.checked) {
-      document.body.classList.add("dark-mode"); // You need to define .dark-mode in your CSS
+    document.body.classList.add("dark-mode"); // You need to define .dark-mode in your CSS
   } else {
-      document.body.classList.remove("dark-mode");
+    document.body.classList.remove("dark-mode");
   }
 });
 
@@ -90,27 +106,26 @@ document.getElementById("overlay").addEventListener("click", function () {
 
 // Function to keep an element scrolled to the bottom
 function scrollToBottom() {
-    const element = document.getElementById("message-history");
-    element.scrollTop = element.scrollHeight;
+  const element = document.getElementById("message-history");
+  element.scrollTop = element.scrollHeight;
 }
 
 function clearChat() {
-    const messageHistory = document.getElementById("message-history");
+  const messageHistory = document.getElementById("message-history");
 
-    while (messageHistory.firstChild) {
-	messageHistory.removeChild(messageHistory.lastChild);
-    }
+  while (messageHistory.firstChild) {
+    messageHistory.removeChild(messageHistory.lastChild);
+  }
 }
-
 
 // Example usage
 scrollToBottom();
 
 async function startRecording() {
-    console.log("Recording started");
-    handleGptResponse(
+  console.log("Recording started");
+  handleGptResponse(
     'Claro, aquí tienes una oración en español: "El sol brilla intensamente en el cielo azul, iluminando el paisaje montañoso."',
-	"ll"
+    "ll"
   );
   console.log("bugs");
 
@@ -158,28 +173,36 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-
-
 document.getElementById("testGpt").addEventListener("click", async () => {
-    const messageHistory = document.getElementById("message-history");
-    const messages = await queryGpt("¡Hola, Señor Language Hero! ¿Cómo estoy hoy? Es un placer conocerle. Es una muy bueno dia. Vi un hombre fea.", proficiency, language, messageHistory.childNodes.length == 0);
-    console.log(messages);
-    console.log(messages[0]);
-    console.log(messages[0].content);
-    console.log(messages[0].content[0]);
-    console.log(messages[0].content[0].text);
-    console.log(messages[0].content[0].text.value);
-    const message = messages[0].content[0].text.value;
-    console.log(message);
-    console.log(parseAnnotations(message));
-    // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
+  const messageHistory = document.getElementById("message-history");
+  const messages = await queryGpt(
+    "¡Hola, Señor Language Hero! ¿Cómo estoy hoy? Es un placer conocerle. Es una muy bueno dia. Vi un hombre fea.",
+    proficiency,
+    language,
+    messageHistory.childNodes.length == 0
+  );
+  console.log(messages);
+  console.log(messages[0]);
+  console.log(messages[0].content);
+  console.log(messages[0].content[0]);
+  console.log(messages[0].content[0].text);
+  console.log(messages[0].content[0].text.value);
+  const message = messages[0].content[0].text.value;
+  console.log(message);
+  console.log(parseAnnotations(message));
+  // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
 });
-
-document.getElementById("record-btn").addEventListener("click", async (e) => {
+async function transcribeHandler(e) {
+  console.log("Event Target:", e.target);
+  console.log("Current Target:", e.currentTarget);
+  e.stopPropagation();
   if (e.target.classList.contains("active")) {
-    transcription.stop();
+    console.log("Trying to call a stop");
+    stopTranscript();
     //stopTranscript();
+    e.target.classList.toggle("active");
   } else {
+    e.target.removeEventListener("click", transcribeHandler);
     e.target.classList.add("active");
     const creds = {
       authToken: "d32daf8e912d4dd4bf7eeab5b15585d4",
@@ -190,9 +213,13 @@ document.getElementById("record-btn").addEventListener("click", async (e) => {
       creds.region,
       "spanish"
     );
+    e.target.addEventListener("click", transcribeHandler);
     console.log();
   }
-});
+}
+document
+  .getElementById("record-btn")
+  .addEventListener("click", transcribeHandler);
 
 async function handleGptResponse(text, language = "en") {
   const container = document.getElementById("message-history");

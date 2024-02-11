@@ -31736,11 +31736,43 @@ async function streamTTSAudio(text, language) {
 module.exports = { initializeAudioPlayer, streamTTSAudio };
 
 },{"stream":9}],291:[function(require,module,exports){
+function parseAnnotations(annotated) {
+    // Function to get the error color based on type
+    function getErrorColor(type) {
+        const errorColors = {
+            V: 'red', // Verb errors
+            N: 'blue', // Noun errors
+            S: 'green', // Syntax errors
+            L: 'orange' // Lexical errors
+        };
+        return errorColors[type] || 'grey'; // Default color if type is unknown
+    }
+
+    // Updated Regex to dynamically match the error number without hardcoding
+    const regex = /<(\d+) ([VNSL]) ([^>]+)>([^<]+)<\1>/g;
+    
+    // Replace function to transform annotated text into HTML with tooltips
+    const replaceFunction = (match, number, type, reason, offendingPhrase) => {
+        const colorClass = `tooltip ${getErrorColor(type)}`; // Get color class based on error type
+	const explanation = reason.trim().replace(/"/g, '&quot;')
+        // Return a span element with the class, data attribute for explanation, and the offending phrase
+        return `<span class="${colorClass}" data-explanation="${explanation}">${offendingPhrase}</span>`;
+    };
+    
+    // Replace annotated errors with HTML spans using the replace method and the replaceFunction callback
+    const html = annotated.replace(regex, replaceFunction);
+
+    return `<p>${html}</p>`; // Wrap the result in paragraph tags for HTML output
+}
+
+module.exports = parseAnnotations;
+
+},{}],292:[function(require,module,exports){
 var currentChatId = null;
 var languageHeroId = null;
 
-async function queryGpt(userQuery, level, language) {
-    if (currentChatId == null) {
+async function queryGpt(userQuery, level, language, isNewChat) {
+    if (currentChatId === null || isNewChat) {
 	console.log("mugsy");
 	const data = await fetch('/chat/new-chat', {
             method: 'POST',
@@ -31840,7 +31872,7 @@ async function queryGpt(userQuery, level, language) {
     res = await pollUntilComplete();
     console.log('Polling complete.');
     console.log(res);
-    const messages = res.newMessages;
+    const messages = res.messages;
     return messages;
 
 	/*
@@ -31862,10 +31894,11 @@ async function queryGpt(userQuery, level, language) {
 
 module.exports = queryGpt;
 
-},{}],292:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 const audio = require("./audio.js");
 const queryGpt = require("./queryGpt.js");
 const transcription = require("./transcript.js"); // Close sidebar when clicking the close button
+const parseAnnotations = require("./parseAnnotations.js");
 let language = "english";
 let proficiency = 1;
 let stopTranscript;
@@ -31889,30 +31922,48 @@ function showText(number) {
   }
 }
 
-function createAudioBitVisualization(containerId, numBits, maxHeight) {
-  var container = document.getElementById(containerId);
-  // Ensure the container has a position style set to relative in your CSS
-  for (var i = 0; i < numBits; i++) {
-    var bitWidth = 5; // Set a fixed width for each audio bit, for example, 5 pixels
-    var height = Math.random() * maxHeight;
-    var posX = Math.random() * (container.offsetWidth - bitWidth) + 20; // Adjust posX so bits don't overflow
-    var bit = document.createElement("div");
-    bit.className = "audioBit";
-    bit.style.position = "absolute"; // Bits must be absolutely positioned within the container
-    bit.style.height = height + "px";
-    bit.style.width = bitWidth + "px"; // Set the width for each bit
-    bit.style.left = posX + "px";
-    bit.style.bottom = "20px"; // Position from the bottom of the container
-    container.appendChild(bit);
-  }
-}
-
 //language dropdown in sidebar alters language
 document
   .getElementById("languageSelect")
   .addEventListener("change", function () {
     language = this.value;
+    let languageCode;
+    switch (language) {
+      case "english":
+        languageCode = "en";
+        break;
+      case "french":
+        languageCode = "fr";
+        break;
+      case "german":
+        languageCode = "de";
+        break;
+      case "italian":
+        languageCode = "it";
+        break;
+      case "portuguese":
+        languageCode = "pt";
+        break;
+      case "russian":
+        languageCode = "ru";
+        break;
+      case "spanish":
+        languageCode = "es";
+        break;
+      case "turkish":
+        languageCode = "tr";
+        break;
+      default:
+        languageCode = "en";
+        break;
+    }
+    var paragraphs = document.querySelectorAll("p");
+    for (var i = 0; i < paragraphs.length; i++) {
+      // Set the lang attribute to the desired value, e.g., 'en'
+      paragraphs[i].setAttribute("lang", "languageCode");
+    }
     console.log(`Language set to: ${language}`); // For demonstration
+    clearChat();
   });
 
 //proficiency buttons alter proficiency
@@ -31920,6 +31971,7 @@ document.querySelectorAll(".proficiency-btn").forEach((button) => {
   button.addEventListener("click", function () {
     proficiency = parseInt(this.textContent) || proficiency; // Update proficiency or keep the old value if parsing fails
     console.log(`Proficiency set to: ${proficiency}`); // For demonstration
+    clearChat();
   });
 });
 
@@ -31948,10 +32000,19 @@ document.getElementById("overlay").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   this.classList.remove("overlay-open");
 });
+
 // Function to keep an element scrolled to the bottom
 function scrollToBottom() {
   const element = document.getElementById("message-history");
   element.scrollTop = element.scrollHeight;
+}
+
+function clearChat() {
+  const messageHistory = document.getElementById("message-history");
+
+  while (messageHistory.firstChild) {
+    messageHistory.removeChild(messageHistory.lastChild);
+  }
 }
 
 // Example usage
@@ -32010,15 +32071,35 @@ document.addEventListener("keyup", function (event) {
 });
 
 document.getElementById("testGpt").addEventListener("click", async () => {
-  const messages = await queryGpt("Hola Senor Language Hero", 1, "Espanol");
+  const messageHistory = document.getElementById("message-history");
+  const messages = await queryGpt(
+    "¡Hola, Señor Language Hero! ¿Cómo estoy hoy? Es un placer conocerle. Es una muy bueno dia. Vi un hombre fea.",
+    proficiency,
+    language,
+    messageHistory.childNodes.length == 0
+  );
   console.log(messages);
+  console.log(messages[0]);
+  console.log(messages[0].content);
+  console.log(messages[0].content[0]);
+  console.log(messages[0].content[0].text);
+  console.log(messages[0].content[0].text.value);
+  const message = messages[0].content[0].text.value;
+  console.log(message);
+  console.log(parseAnnotations(message));
+  // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
 });
-
-document.getElementById("record-btn").addEventListener("click", async (e) => {
+async function transcribeHandler(e) {
+  console.log("Event Target:", e.target);
+  console.log("Current Target:", e.currentTarget);
+  e.stopPropagation();
   if (e.target.classList.contains("active")) {
-    transcription.stop();
+    console.log("Trying to call a stop");
+    stopTranscript();
     //stopTranscript();
+    e.target.classList.toggle("active");
   } else {
+    e.target.removeEventListener("click", transcribeHandler);
     e.target.classList.add("active");
     const creds = {
       authToken: "d32daf8e912d4dd4bf7eeab5b15585d4",
@@ -32029,9 +32110,13 @@ document.getElementById("record-btn").addEventListener("click", async (e) => {
       creds.region,
       "spanish"
     );
+    e.target.addEventListener("click", transcribeHandler);
     console.log();
   }
-});
+}
+document
+  .getElementById("record-btn")
+  .addEventListener("click", transcribeHandler);
 
 async function handleGptResponse(text, language = "en") {
   const container = document.getElementById("message-history");
@@ -32131,7 +32216,7 @@ async function handleGptResponse(text, language = "en") {
   }
 }
 
-},{"./audio.js":290,"./queryGpt.js":291,"./transcript.js":293}],293:[function(require,module,exports){
+},{"./audio.js":290,"./parseAnnotations.js":291,"./queryGpt.js":292,"./transcript.js":294}],294:[function(require,module,exports){
 const SpeechSDK = require("microsoft-cognitiveservices-speech-sdk");
 let recog;
 function stop() {
@@ -32196,30 +32281,31 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
   const container = document.getElementById("message-history");
   const messageElement = document.createElement("div");
   messageElement.classList.add("user-message");
+  const img = document.createElement("img");
+  img.classList.add("user-icon");
+  img.src = "images/Blank-user-icon.jpg";
+  messageElement.appendChild(img);
   let currentString = "";
   //create inner html
-  let inner = `<img class="user-icon" src="images/Blank-user-icon.jpg" />
-    <div class="message-content">
-      <p>
-        
+  const messageContent = document.createElement("div");
+  messageContent.classList.add("message-content");
+  const p = document.createElement("p");
+  p.setAttribute("lang", "es");
+  let inner = `
+    
+      <p lang="es">
+
       </p>
-    </div>`;
-  messageElement.innerHTML = inner;
+    `;
+
+  messageContent.appendChild(p);
+  messageElement.appendChild(messageContent);
   container.appendChild(messageElement);
   //pronunciationAssessmentConfig.applyTo(recognizer);
   console.log("Pronunciation assessment config applied");
   recognizer.recognizing = (s, e) => {
-    inner =
-      `<img class="user-icon" src="images/Blank-user-icon.jpg" />
-    <div class="message-content">
-      <p>
-        ` +
-      currentString +
-      e.result.text +
-      `
-      </p>
-    </div>`;
-    messageElement.innerHTML = inner;
+    p.textContent = currentString + e.result.text;
+
     console.log(e.privResult);
     console.log(`RECOGNIZING: Text=${e.result.text}`);
     console.log("aaa");
@@ -32229,8 +32315,10 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
     if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
       //	    let pronunciationAssessmentResult = SpeechSDK.PronunciationAssessmentResult.fromResult(e.result);
       console.log(`RECOGNIZED: Text=${e.result.text}`);
-      currentString += e.result.text;
+      currentString = currentString + " " + e.result.text;
+      p.textContent = currentString;
       console.log("Pronunciation: ");
+      console.log("");
       //	    console.log(pronunciationAssessmentResult);
     } else if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
       console.log("NOMATCH: Speech could not be recognized.");
@@ -32249,6 +32337,13 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
       console.error(`ERROR: ${err}`);
     }
   );
+  return function () {
+    console.log("Recognition tried to end");
+    recognizer.stopContinuousRecognitionAsync(() => {
+      console.log("transcription stopped");
+    });
+    //	var pronunciationAssessmentResultJson = speechRecognitionResult.properties.getProperty(SpeechSDK.PropertyId.SpeechServiceResponse_JsonResult);
+  };
 
   // Stop the recognition after some time (e.g., 30 seconds)
   // setTimeout(() => {
@@ -32268,4 +32363,4 @@ function transcribeFromMicrophone(subscriptionKey, serviceRegion, language) {
 
 module.exports = { transcribeFromMicrophone, stop };
 
-},{"microsoft-cognitiveservices-speech-sdk":28}]},{},[292]);
+},{"microsoft-cognitiveservices-speech-sdk":28}]},{},[293]);

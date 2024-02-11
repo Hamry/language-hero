@@ -1,3 +1,6 @@
+.active {
+  background-color: red !important;
+}
 .audioBit {
   position: absolute;
   bottom: 0;
@@ -286,9 +289,9 @@ h3 {
   cursor: pointer;
 }
 
-#record-btn:active {
-  background-color: #218838;
-}
+/* #record-btn:active {
+  background-color: red;
+} */
 
 #settings-btn {
   background: black;
