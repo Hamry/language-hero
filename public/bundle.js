@@ -27846,19 +27846,6 @@ function showText(number) {
   }
 }
 
-const playTtsButton = document.getElementById("playTts");
-console.log(playTtsButton);
-const replayTtsButton = document.getElementById("replayTts");
-//console.log(replayTtsButton);
-
-playTtsButton.addEventListener("click", function () {
-  audio.fetchAndPlayTTS();
-});
-
-replayTtsButton.addEventListener("click", function () {
-  audio.replayTTS();
-});
-
 function createAudioBitVisualization(containerId, numBits, maxHeight) {
   var container = document.getElementById(containerId);
   // Ensure the container has a position style set to relative in your CSS
@@ -28025,25 +28012,25 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-document.getElementById("testGpt").addEventListener("click", async () => {
-  const messageHistory = document.getElementById("message-history");
-  const messages = await queryGpt(
-    "¡Hola, Señor Language Hero! ¿Cómo estoy hoy? Es un placer conocerle. Es una muy bueno dia. Vi un hombre fea.",
-    proficiency,
-    language,
-    messageHistory.childNodes.length == 0
-  );
-  console.log(messages);
-  console.log(messages[0]);
-  console.log(messages[0].content);
-  console.log(messages[0].content[0]);
-  console.log(messages[0].content[0].text);
-  console.log(messages[0].content[0].text.value);
-  const message = messages[0].content[0].text.value;
-  console.log(message);
-  console.log(parseAnnotations(message));
-  // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
-});
+// document.getElementById("testGpt").addEventListener("click", async () => {
+//   const messageHistory = document.getElementById("message-history");
+//   const messages = await queryGpt(
+//     "¡Hola, Señor Language Hero! ¿Cómo estoy hoy? Es un placer conocerle. Es una muy bueno dia. Vi un hombre fea.",
+//     proficiency,
+//     language,
+//     messageHistory.childNodes.length == 0
+//   );
+//   console.log(messages);
+//   console.log(messages[0]);
+//   console.log(messages[0].content);
+//   console.log(messages[0].content[0]);
+//   console.log(messages[0].content[0].text);
+//   console.log(messages[0].content[0].text.value);
+//   const message = messages[0].content[0].text.value;
+//   console.log(message);
+//   console.log(parseAnnotations(message));
+//   // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
+// });
 
 async function transcribeHandler(e) {
   console.log("Event Target:", e.target);

@@ -1,11 +1,17 @@
-.active {
-  background-color: red !important;
-}
-.audioBit {
-  position: absolute;
-  bottom: 0;
-  width: 5px; /* Match this to the bitWidth variable in the script */
-  background-color: #007bff; /* Or your desired bit color */
+.translate-btn {
+  background-color: #f5f5dc; /* Light cream background */
+  color: #333; /* Text color */
+  border: none; /* Removes the default border */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+  padding: 15px 32px; /* Padding inside the button */
+  text-align: center; /* Center the text inside the button */
+  text-decoration: none; /* Removes any text decoration */
+  display: inline-block; /* Allows setting dimensions */
+  font-size: 16px; /* Sets the font size */
+  border-radius: 50%; /* Makes the button circular */
+  width: 50px; /* Sets the width of the button */
+  height: 50px; /* Sets the height of the button */
+  line-height: 20px; /* Adjusts the line height for vertical alignment */
 }
 .hidden {
   display: none !important;
@@ -256,7 +262,7 @@ h3 {
   margin-bottom: 0px !important;
 }
 .navbar {
-  border-bottom: dashed black 1px;
+  border-bottom: solid gray 1px;
   padding: 1em;
   background-color: white;
   display: flex;
@@ -300,8 +306,8 @@ h3 {
   border-radius: 0.5rem;
   color: white;
   /*font-size: 24px;*/
-  height: 2em;
-  width: 2em;
+  height: 3em;
+  width: 3em;
 }
 
 #settings-btn:focus {
