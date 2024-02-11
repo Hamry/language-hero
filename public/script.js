@@ -3,6 +3,44 @@ const queryGpt = require("./queryGpt.js");
 const transcription = require("./transcript.js"); // Close sidebar when clicking the close button
 let language = "english";
 let proficiency = 1;
+let stopTranscript;
+
+function showText(number) {
+  // Find the elements by their IDs using the provided number
+  var message = document.getElementById("message" + number);
+  var wavepng = document.getElementById("wavepng" + number);
+
+  // Check if the message is currently hidden
+  if (message.classList.contains("hidden")) {
+    // If it is hidden, remove the 'hidden' class to show it
+    message.classList.remove("hidden");
+    // Hide the wavepng by adding 'hidden' class or setting display to 'none'
+    wavepng.style.display = "none";
+  } else {
+    // Optional: Hide the message again and show the wavepng if needed
+    // This part can be omitted if toggling back is not required
+    message.classList.add("hidden");
+    wavepng.style.display = "block";
+  }
+}
+
+function createAudioBitVisualization(containerId, numBits, maxHeight) {
+  var container = document.getElementById(containerId);
+  // Ensure the container has a position style set to relative in your CSS
+  for (var i = 0; i < numBits; i++) {
+    var bitWidth = 5; // Set a fixed width for each audio bit, for example, 5 pixels
+    var height = Math.random() * maxHeight;
+    var posX = Math.random() * (container.offsetWidth - bitWidth) + 20; // Adjust posX so bits don't overflow
+    var bit = document.createElement("div");
+    bit.className = "audioBit";
+    bit.style.position = "absolute"; // Bits must be absolutely positioned within the container
+    bit.style.height = height + "px";
+    bit.style.width = bitWidth + "px"; // Set the width for each bit
+    bit.style.left = posX + "px";
+    bit.style.bottom = "20px"; // Position from the bottom of the container
+    container.appendChild(bit);
+  }
+}
 
 //language dropdown in sidebar alters language
 document
@@ -111,22 +149,24 @@ document.getElementById("testGpt").addEventListener("click", async () => {
   console.log(messages);
 });
 
-document
-  .getElementById("testTranscribe")
-  .addEventListener("click", async (e) => {
+document.getElementById("record-btn").addEventListener("click", async (e) => {
+  if (e.target.classList.contains("active")) {
+    transcription.stop();
+    //stopTranscript();
+  } else {
     e.target.classList.add("active");
     const creds = {
       authToken: "d32daf8e912d4dd4bf7eeab5b15585d4",
       region: "eastus",
     };
-    console.log(
-      transcription.transcribeFromMicrophone(
-        creds.authToken,
-        creds.region,
-        "spanish"
-      )
+    stopTranscript = transcription.transcribeFromMicrophone(
+      creds.authToken,
+      creds.region,
+      "spanish"
     );
-  });
+    console.log();
+  }
+});
 
 async function handleGptResponse(text, language = "en") {
   const container = document.getElementById("message-history");
@@ -174,16 +214,49 @@ async function handleGptResponse(text, language = "en") {
     //loadingElement.style.display = 'none';
 
     // Create and append the message element
+    let number = document.getElementById("message-history").childElementCount;
+    console.log(
+      `
+    <img class="bot-icon" src="images/Blank-user-icon.jpg" />
+    <div id= "latest-` +
+        number +
+        `" class="message-content">
+        <button class="message-play-btn" onclick="audioPlayer.play()">
+            <i class="fa fa-play" style=""></i>
+        </button>
 
-    messageElement.innerHTML = `
+        <p class="hidden">${text}</p>
+    </div>
+`
+    );
+    messageElement.innerHTML =
+      `
             <img class="bot-icon" src="images/Blank-user-icon.jpg" />
-            <div class="message-content">
+            <div id= "latest-` +
+      number +
+      `" class="message-content">
                 <button class="message-play-btn" onclick="audioPlayer.play()">
                     <i class="fa fa-play" style=""></i>
                 </button>
-                <p>${text}</p>
+
+                <p id="message` +
+      number +
+      `" class="hidden">${text}</p>
+                <img id="wavepng` +
+      number +
+      `" src="/images/download.png"/>
+                <button id="text-btn-` +
+      number +
+      `" class="translate-btn" >T</button>
             </div>
         `;
+
+    document
+      .getElementById("text-btn-" + number)
+      .addEventListener("click", () => {
+        showText(number);
+      });
+    //createAudioBitVisualization("latest-" + number, 20, 10);
     scrollToBottom();
   } catch (error) {
     console.error("Error handling GPT response:", error);
