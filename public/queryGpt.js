@@ -2,6 +2,7 @@ var currentChatId = null;
 var languageHeroId = null;
 
 async function queryGpt(userQuery, level, language, isNewChat) {
+    console.log(isNewChat);
     if (currentChatId === null || isNewChat) {
 	console.log("mugsy");
 	const data = await fetch('/chat/new-chat', {
