@@ -305,7 +305,9 @@ async function handleGptResponse(text, language = "en") {
   // Show loading element
   //loadingElement.style.display = 'block';
 
-  try {
+    try {
+	console.log("sup");
+	console.log(text);
     const delim = "\n";
     const response = text.slice(text.indexOf(delim) + delim.length);
     const annotated = text.slice(0, text.indexOf(delim));
@@ -356,7 +358,7 @@ async function handleGptResponse(text, language = "en") {
             <div id= "latest-` +
       number +
       `" class="message-content">
-                <button class="message-play-btn" onclick="audioPlayer.play()">
+                <button class="message-play-btn" id="replay`+ number + `">
                     <i class="fa fa-play" style=""></i>
                 </button>
 
@@ -377,6 +379,7 @@ async function handleGptResponse(text, language = "en") {
       .addEventListener("click", () => {
         showText(number);
       });
+	document.getElementById("replay" + number).addEventListener("click", () => {replay(number)})
     //createAudioBitVisualization("latest-" + number, 20, 10);
     scrollToBottom();
   } catch (error) {

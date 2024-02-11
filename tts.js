@@ -13,7 +13,8 @@ async function streamTts(text, speed = 1) {
     textInput: text,
 
     speed: speed,
-    output_format: "mp3_44100_192",
+      output_format: "mp3_44100_192",
+      voice: process.env.EL_VOICE_ID,
     //	stability:       0.5,
     //	similarityBoost: 0.5,
     modelId: "eleven_multilingual_v2",
