@@ -1,6 +1,7 @@
 const audio = require("./audio.js");
 const queryGpt = require("./queryGpt.js");
 const transcription = require("./transcript.js"); // Close sidebar when clicking the close button
+const parseAnnotations = require("./parseAnnotations.js");
 let language = "english";
 let proficiency = 1;
 
@@ -9,15 +10,18 @@ document
   .getElementById("languageSelect")
   .addEventListener("change", function () {
     language = this.value;
-    console.log(`Language set to: ${language}`); // For demonstration
+      console.log(`Language set to: ${language}`); // For demonstration
+      clearChat();
   });
 
 //proficiency buttons alter proficiency
 document.querySelectorAll(".proficiency-btn").forEach((button) => {
   button.addEventListener("click", function () {
-    proficiency = parseInt(this.textContent) || proficiency; // Update proficiency or keep the old value if parsing fails
-    console.log(`Proficiency set to: ${proficiency}`); // For demonstration
+      proficiency = parseInt(this.textContent) || proficiency; // Update proficiency or keep the old value if parsing fails
+      console.log(`Proficiency set to: ${proficiency}`); // For demonstration
+      clearChat();
   });
+
 });
 
 document.getElementById("closeBtn").addEventListener("click", function () {
@@ -28,9 +32,9 @@ document.getElementById("closeBtn").addEventListener("click", function () {
 // Example: Toggle light/dark mode (simplified version)
 document.getElementById("themeSwitch").addEventListener("change", function (e) {
   if (e.target.checked) {
-    document.body.classList.add("dark-mode"); // You need to define .dark-mode in your CSS
+      document.body.classList.add("dark-mode"); // You need to define .dark-mode in your CSS
   } else {
-    document.body.classList.remove("dark-mode");
+      document.body.classList.remove("dark-mode");
   }
 });
 
@@ -45,20 +49,30 @@ document.getElementById("overlay").addEventListener("click", function () {
   document.getElementById("sidebar").classList.remove("sidebar-open");
   this.classList.remove("overlay-open");
 });
+
 // Function to keep an element scrolled to the bottom
 function scrollToBottom() {
-  const element = document.getElementById("message-history");
-  element.scrollTop = element.scrollHeight;
+    const element = document.getElementById("message-history");
+    element.scrollTop = element.scrollHeight;
 }
+
+function clearChat() {
+    const messageHistory = document.getElementById("message-history");
+
+    while (messageHistory.firstChild) {
+	messageHistory.removeChild(messageHistory.lastChild);
+    }
+}
+
 
 // Example usage
 scrollToBottom();
 
 async function startRecording() {
-  console.log("Recording started");
-  handleGptResponse(
+    console.log("Recording started");
+    handleGptResponse(
     'Claro, aquí tienes una oración en español: "El sol brilla intensamente en el cielo azul, iluminando el paisaje montañoso."',
-    "ll"
+	"ll"
   );
   console.log("bugs");
 
@@ -106,9 +120,21 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
+
+
 document.getElementById("testGpt").addEventListener("click", async () => {
-  const messages = await queryGpt("Hola Senor Language Hero", 1, "Espanol");
-  console.log(messages);
+    const messageHistory = document.getElementById("message-history");
+    const messages = await queryGpt("¡Hola, Señor Language Hero! ¿Cómo estoy hoy? Es un placer conocerle. Es una muy bueno dia. Vi un hombre fea.", proficiency, language, messageHistory.childNodes.length == 0);
+    console.log(messages);
+    console.log(messages[0]);
+    console.log(messages[0].content);
+    console.log(messages[0].content[0]);
+    console.log(messages[0].content[0].text);
+    console.log(messages[0].content[0].text.value);
+    const message = messages[0].content[0].text.value;
+    console.log(message);
+    console.log(parseAnnotations(message));
+    // console.log(parseAnnotations(`¡Hola, Señor Language Hero! ¿Cómo <1 V Está is the correct conjugation for addressing a person formally.>estoy<1> hoy? Es un placer conocerle. Es una <2 S In Spanish, the adjective comes after the noun.>muy bueno<2> día. Vi un <3 L "fea" should be replaced with "feo", as "hombre" is a masculine noun.>hombre fea<3>.`));
 });
 
 document
