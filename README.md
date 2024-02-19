@@ -24,6 +24,10 @@ Throughout the development of Language Hero, our team faced several challenges, 
 - **Integrating diverse APIs**: Combining services from OpenAI, Eleven Labs, and Azure required us to navigate different documentation and APIs. We overcame this by dividing the work among team members, each specializing in a particular API integration.
 - **Streaming audio data**: Handling streaming audio data for speech-to-text and text-to-speech functionality presented technical hurdles. We addressed these by thoroughly researching and implementing best practices for audio data management in web applications.
 - **Uncooperative AI**: It was difficult to get the AI to format the response as desired.
+
+## Demo
+[Devpost Submission](https://devpost.com/software/language-hero)
+
 ## Credits and Acknowledgments
 Language Hero makes use of several public frameworks and APIs, including:
 - [OpenAI's GPT-4](https://openai.com/)
